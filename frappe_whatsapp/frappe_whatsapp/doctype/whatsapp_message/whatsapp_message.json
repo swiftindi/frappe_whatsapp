@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "using_system",
   "label",
   "type",
   "status",
@@ -17,20 +18,26 @@
   "message_id",
   "conversation_id",
   "content_type",
-  "attach"
+  "attach",
+  "section_break_bmre",
+  "whatsapp_template",
+  "template_values",
+  "section_break_lxnl",
+  "reference_doctype",
+  "reference_docname"
  ],
  "fields": [
   {
    "allow_in_quick_entry": 1,
    "fieldname": "label",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Label"
   },
   {
    "fieldname": "type",
    "fieldtype": "Select",
    "label": "Type",
+   "no_copy": 1,
    "options": "Outgoing\nIncoming",
    "set_only_once": 1
   },
@@ -39,6 +46,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Status",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -54,6 +62,8 @@
    "description": "Mobile number with country code",
    "fieldname": "to",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "TO ",
    "set_only_once": 1
   },
@@ -65,6 +75,7 @@
    "depends_on": "eval:(doc.type==\"Incoming\");",
    "fieldname": "from",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "From",
    "set_only_once": 1
   },
@@ -73,19 +84,20 @@
    "fieldname": "message_type",
    "fieldtype": "Select",
    "label": "Message Type",
-   "options": "Manual\nTemplate",
-   "read_only": 1
+   "options": "Manual\nTemplate"
   },
   {
    "fieldname": "message_id",
    "fieldtype": "Data",
    "label": "Message ID",
+   "no_copy": 1,
    "read_only": 1
   },
   {
    "fieldname": "conversation_id",
    "fieldtype": "Data",
    "label": "Conversation ID",
+   "no_copy": 1,
    "read_only": 1
   },
   {
@@ -102,11 +114,53 @@
    "fieldname": "attach",
    "fieldtype": "Attach",
    "label": "Attach"
+  },
+  {
+   "depends_on": "eval:doc.message_type == \"Template\"",
+   "fieldname": "template_values",
+   "fieldtype": "Small Text",
+   "label": "Template Values"
+  },
+  {
+   "fieldname": "section_break_bmre",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.message_type == \"Template\"",
+   "fieldname": "whatsapp_template",
+   "fieldtype": "Link",
+   "label": "WhatsApp Template",
+   "mandatory_depends_on": "eval:doc.message_type == \"Template\"",
+   "options": "WhatsApp Templates"
+  },
+  {
+   "default": "0",
+   "description": "<b> Note :</b> If Using System  will enqueue to send",
+   "fieldname": "using_system",
+   "fieldtype": "Check",
+   "label": "Using System",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_lxnl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference Doctype",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reference_docname",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Docname",
+   "options": "reference_doctype"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-29 15:44:15.541434",
+ "modified": "2024-04-08 12:19:37.290282",
  "modified_by": "Administrator",
  "module": "Frappe Whatsapp",
  "name": "WhatsApp Message",
