@@ -37,10 +37,13 @@ def post():
 	}).insert(ignore_permissions=True)
 
 	messages = []
+	contact = []
 	try:
 		messages = data["entry"][0]["changes"][0]["value"].get("messages", [])
+		contact = data["entry"][0]["changes"][0]["value"].get("contacts", [])
 	except KeyError:
 		messages = data["entry"]["changes"][0]["value"].get("messages", [])
+		contact = data["entry"]["changes"][0]["value"].get("contacts", [])
 
 	if messages:
 		for message in messages:
@@ -52,6 +55,7 @@ def post():
 					"doctype": "WhatsApp Message",
 					"type": "Incoming",
 					"from": message['from'],
+					"whatsapp_profile_name": contact[0]['profile']['name'],
 					"message": message['text']['body'],
 					"message_id": message['id'],
 					"reply_to_message_id": reply_to_message_id,
@@ -69,14 +73,36 @@ def post():
 					"content_type": "reaction"
 				}).insert(ignore_permissions=True)
 			elif message_type == 'interactive':
-				frappe.get_doc({
-					"doctype": "WhatsApp Message",
-					"type": "Incoming",
-					"from": message['from'],
-					"message": message['interactive']['nfm_reply']['response_json'],
-					"message_id": message['id'],
-					"content_type": "flow"
-				}).insert(ignore_permissions=True)
+				if message['interactive']['type'] == 'nfm_reply':
+					frappe.get_doc({
+						"doctype": "WhatsApp Message",
+						"type": "Incoming",
+						"from": message['from'],
+						"whatsapp_profile_name": contact[0]['profile']['name'],
+						"message": message['interactive']['nfm_reply']['response_json'],
+						"message_id": message['id'],
+						"content_type": "flow"
+					}).insert(ignore_permissions=True)
+				elif message['interactive']['type'] == 'list_reply':
+					frappe.get_doc({
+						"doctype": "WhatsApp Message",
+						"type": "Incoming",
+						"from": message['from'],
+						"whatsapp_profile_name": contact[0]['profile']['name'],
+						"message": message['interactive']['list_reply']['title'],
+						"message_id": message['id'],
+						"content_type": "flow"
+					}).insert(ignore_permissions=True)
+				elif message['interactive']['type'] == 'button_reply':
+					frappe.get_doc({
+						"doctype": "WhatsApp Message",
+						"type": "Incoming",
+						"from": message['from'],
+						"whatsapp_profile_name": contact[0]['profile']['name'],
+						"message": message['interactive']['button_reply']['title'],
+						"message_id": message['id'],
+						"content_type": "flow"
+					}).insert(ignore_permissions=True)
 			elif message_type in ["image", "audio", "video", "document"]:
 				settings = frappe.get_doc(
 							"WhatsApp Settings", "WhatsApp Settings",

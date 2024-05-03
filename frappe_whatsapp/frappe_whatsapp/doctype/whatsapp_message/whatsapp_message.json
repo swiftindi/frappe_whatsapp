@@ -11,6 +11,7 @@
   "status",
   "to",
   "from",
+  "whatsapp_profile_name",
   "use_template",
   "template",
   "template_parameters",
@@ -140,6 +141,11 @@
    "fieldname": "attach",
    "fieldtype": "Attach",
    "label": "Attach"
+  },
+  {
+   "fieldname": "whatsapp_profile_name",
+   "fieldtype": "Read Only",
+   "label": "WhatsApp Profile Name"
   },
   {
    "fieldname": "section_break_iyjf",
